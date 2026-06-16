@@ -33,6 +33,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          data-domain="vozinha-follower-count.vercel.app"
+          src="https://analytics.fluxastats.com/js/script.js"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
