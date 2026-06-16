@@ -1,0 +1,325 @@
+:root {
+  --cv-blue: #003893;
+  --cv-blue-light: #2f6bdc;
+  --cv-red: #cf2027;
+  --bg: #0b0b0f;
+  --bg-elev: #14141b;
+  --text: #f5f6fa;
+  --muted: #9aa0aa;
+  --live: #22c55e;
+  --amber: #f59e0b;
+  --grey: #6b7280;
+  --ring: rgba(47, 107, 220, 0.35);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- layout ---------- */
+.page {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: clamp(1.25rem, 5vw, 3rem) 1.25rem 2.5rem;
+  overflow: hidden;
+}
+
+/* decorative blue radial glow behind the hero */
+.glow {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: min(120vw, 900px);
+  height: min(120vw, 900px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--ring) 0%, rgba(47, 107, 220, 0) 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* rotating ten-star ring (Cape Verde flag motif) */
+.starfield {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: min(96vw, 560px);
+  height: min(96vw, 560px);
+  transform: translate(-50%, -50%);
+  background: center / contain no-repeat url("/star-ring.svg");
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
+  animation: spin 120s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.hero,
+.context,
+.footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+/* ---------- profile ---------- */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--cv-blue-light);
+  box-shadow: 0 0 0 4px rgba(47, 107, 220, 0.15);
+  background: var(--bg-elev);
+}
+
+.who {
+  text-align: left;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.verified {
+  flex: none;
+}
+
+.handle {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.handle:hover {
+  color: var(--cv-blue-light);
+}
+
+/* ---------- counter ---------- */
+.counter-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.counter {
+  font-size: clamp(3rem, 16vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+  background: linear-gradient(180deg, #ffffff 0%, #c7dcff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 38px rgba(120, 170, 255, 0.35);
+}
+
+/* ---------- badge ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+.badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge.live {
+  color: var(--live);
+}
+.badge.live .dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.badge.recent {
+  color: var(--amber);
+}
+.badge.stale {
+  color: var(--grey);
+}
+.badge.connecting {
+  color: var(--muted);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    opacity: 0.7;
+  }
+}
+
+/* ---------- growth ---------- */
+.growth {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-height: 1.6rem;
+}
+.growth.up {
+  color: var(--live);
+}
+.growth.muted {
+  color: var(--muted);
+  font-weight: 500;
+}
+.growth .arrow {
+  font-size: 0.8em;
+}
+
+/* ---------- share ---------- */
+.share {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.share-btn,
+.share-x {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.share-btn {
+  background: linear-gradient(135deg, var(--cv-blue-light), var(--cv-blue));
+  color: #fff;
+}
+.share-x {
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.share-btn:hover,
+.share-x:hover {
+  filter: brightness(1.1);
+}
+.share-btn:active,
+.share-x:active {
+  transform: translateY(1px);
+}
+
+/* ---------- context ---------- */
+.context {
+  text-align: center;
+  color: #d7dae1;
+  line-height: 1.6;
+  font-size: 1.02rem;
+}
+.context-title {
+  font-size: clamp(1.3rem, 4.5vw, 1.7rem);
+  font-weight: 800;
+  margin-bottom: 0.9rem;
+  color: #fff;
+}
+.context p + p {
+  margin-top: 0.75rem;
+}
+.context strong {
+  color: #fff;
+}
+
+/* ---------- footer ---------- */
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  max-width: 560px;
+}
+.footer-credit {
+  margin-top: 0.4rem;
+}
+.footer a {
+  color: var(--cv-blue-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starfield {
+    animation: none;
+  }
+  .badge.live .dot {
+    animation: none;
+  }
+}

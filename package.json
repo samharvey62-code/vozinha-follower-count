@@ -1,0 +1,27 @@
+{
+  "name": "vozinha-follower-count",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Live Instagram follower counter for Cape Verde's World Cup hero Vozinha (@vozinha1).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.34.3",
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "undici": "^8.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
