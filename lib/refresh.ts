@@ -64,3 +64,26 @@ export async function ensureSnapshot(): Promise<Snapshot | null> {
   }
   return inflight;
 }
+
+const FRESH_MS = 20_000;
+const LOCK_KEY = "vozinha:refresh-lock";
+const LOCK_TTL_SEC = 25;
+
+/**
+ * If the cached snapshot is missing or older than maxAgeMs, try to acquire a
+ * short global lock and refresh. Designed to run in `after()` so ordinary
+ * traffic keeps the count fresh without an external cron — while the lock bounds
+ * upstream calls to ~one per LOCK_TTL_SEC no matter how many concurrent
+ * requests or serverless instances are live.
+ */
+export async function refreshIfStale(maxAgeMs = FRESH_MS): Promise<void> {
+  const store = getStore();
+  const snap = await store.get();
+  if (snap && snap.ok && Date.now() - snap.ts < maxAgeMs) return;
+  if (!(await store.tryLock(LOCK_KEY, LOCK_TTL_SEC))) return;
+  try {
+    await refreshSnapshot();
+  } catch {
+    /* swallow — a later request will retry */
+  }
+}

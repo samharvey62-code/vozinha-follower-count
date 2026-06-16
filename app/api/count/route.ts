@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { ensureSnapshot } from "@/lib/refresh";
+import { NextResponse, after } from "next/server";
+import { ensureSnapshot, refreshIfStale } from "@/lib/refresh";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +9,8 @@ const CACHE = "public, s-maxage=5, stale-while-revalidate=30";
 
 export async function GET() {
   const snap = await ensureSnapshot();
+  // Keep the cache fresh from ordinary traffic (lock-bounded, runs after response).
+  after(refreshIfStale());
   if (!snap) {
     return NextResponse.json(
       { ok: false, count: null },

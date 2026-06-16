@@ -1,4 +1,5 @@
-import { ensureSnapshot } from "@/lib/refresh";
+import { after } from "next/server";
+import { ensureSnapshot, refreshIfStale } from "@/lib/refresh";
 import LiveCounter from "@/components/LiveCounter";
 import ProfileHeader from "@/components/ProfileHeader";
 import ContextBlurb from "@/components/ContextBlurb";
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const snap = await ensureSnapshot();
+  after(refreshIfStale());
 
   const initial: Sample | null = snap
     ? {
