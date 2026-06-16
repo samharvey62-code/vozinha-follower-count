@@ -1,0 +1,25 @@
+name: keep-warm
+
+# Keeps the live counter fresh even with no visitor traffic. GitHub's minimum
+# schedule is every 5 minutes, so each run pings /api/poll several times a minute
+# apart to give near-continuous coverage. Free on public repos.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh the live count (~every 55s for ~5 min)
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          for i in $(seq 1 6); do
+            code=$(curl -s -m 20 -o /dev/null -w "%{http_code}" \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              "https://vozinha-follower-count.vercel.app/api/poll" || echo "000")
+            echo "ping $i -> $code"
+            if [ "$i" -lt 6 ]; then sleep 55; fi
+          done

@@ -65,11 +65,13 @@ export async function ensureSnapshot(): Promise<Snapshot | null> {
   return inflight;
 }
 
-// ~45s cadence keeps upstream calls to ~80/hour — well under Instagram's
-// unauthenticated rate limit — while client interpolation hides the gap.
+// ~45s steady cadence (freshness-gated) keeps upstream calls low — client
+// interpolation hides the gap. The lock only needs to cover one refresh attempt
+// to prevent a stampede; keeping it short means a FAILED refresh retries soon
+// (~15s) instead of being locked out, so an intermittent blip can't freeze it.
 const FRESH_MS = 45_000;
 const LOCK_KEY = "vozinha:refresh-lock";
-const LOCK_TTL_SEC = 40;
+const LOCK_TTL_SEC = 15;
 
 /**
  * If the cached snapshot is missing or older than maxAgeMs, try to acquire a
