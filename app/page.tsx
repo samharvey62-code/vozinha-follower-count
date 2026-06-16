@@ -55,6 +55,15 @@ export default async function Home() {
             Fluxa Stats
           </a>
         </p>
+        <p className="powered-socials">
+          <a href="https://www.instagram.com/fluxastats/" target="_blank" rel="noopener noreferrer">
+            Instagram
+          </a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://www.threads.com/@fluxastats" target="_blank" rel="noopener noreferrer">
+            Threads
+          </a>
+        </p>
       </footer>
     </main>
   );
