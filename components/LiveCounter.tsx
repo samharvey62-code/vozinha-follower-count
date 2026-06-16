@@ -78,7 +78,10 @@ export default function LiveCounter({ initial }: { initial: Sample | null }) {
   return (
     <div className="counter-block">
       <LiveBadge ok={sample?.ok ?? false} ts={sample?.ts ?? null} now={now} hasData={hasData} />
-      <Counter value={value} />
+      <div className="counter-wrap">
+        <Counter value={value} />
+        <p className="counter-label">Instagram followers</p>
+      </div>
       <GrowthRate ratePerSec={rate} stale={stale} hasData={hasData} />
       <p className="sr-only" aria-live="polite" role="status">
         {approxLabel(sample?.count ?? 0)}

@@ -173,6 +173,21 @@ a {
   text-shadow: 0 0 38px rgba(120, 170, 255, 0.35);
 }
 
+.counter-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.counter-label {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
 /* ---------- badge ---------- */
 .badge {
   display: inline-flex;
@@ -310,6 +325,18 @@ a {
 }
 .footer-credit {
   margin-top: 0.4rem;
+}
+.powered {
+  margin-top: 0.7rem;
+  font-size: 0.8rem;
+}
+.powered a {
+  color: var(--cv-blue-light);
+  text-decoration: none;
+  font-weight: 600;
+}
+.powered a:hover {
+  text-decoration: underline;
 }
 .footer a {
   color: var(--cv-blue-light);

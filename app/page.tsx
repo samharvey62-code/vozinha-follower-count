@@ -49,6 +49,12 @@ export default async function Home() {
             instagram.com/vozinha1
           </a>
         </p>
+        <p className="powered">
+          Powered by{" "}
+          <a href="https://fluxastats.com/" target="_blank" rel="noopener noreferrer">
+            Fluxa Stats
+          </a>
+        </p>
       </footer>
     </main>
   );
