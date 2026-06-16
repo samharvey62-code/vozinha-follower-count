@@ -11,8 +11,9 @@ export interface Sample {
   ok: boolean;
 }
 
-/** Stop inventing followers once a sample is older than this (no fresh data). */
-export const STALE_AFTER_MS = 90_000;
+/** Stop inventing followers once a sample is older than this (no fresh data).
+ *  Comfortably exceeds the ~45s refresh cadence so a brief hiccup keeps ticking. */
+export const STALE_AFTER_MS = 120_000;
 /** Absurd-rate guard (followers/sec). */
 export const MAX_RATE = 10_000;
 

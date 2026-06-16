@@ -4,13 +4,14 @@ import { ensureSnapshot, refreshIfStale } from "@/lib/refresh";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// CDN-cached for 5s with SWR so a viral traffic spike hits the edge, not the store.
-const CACHE = "public, s-maxage=5, stale-while-revalidate=30";
+// CDN-cached so a viral traffic spike hits the edge, not the store/Instagram.
+const CACHE = "public, s-maxage=10, stale-while-revalidate=60";
 
 export async function GET() {
   const snap = await ensureSnapshot();
   // Keep the cache fresh from ordinary traffic (lock-bounded, runs after response).
-  after(refreshIfStale());
+  // Pass the snapshot we just read to avoid a redundant KV round-trip.
+  after(refreshIfStale(snap));
   if (!snap) {
     return NextResponse.json(
       { ok: false, count: null },

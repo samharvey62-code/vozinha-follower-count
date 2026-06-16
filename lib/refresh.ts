@@ -65,9 +65,11 @@ export async function ensureSnapshot(): Promise<Snapshot | null> {
   return inflight;
 }
 
-const FRESH_MS = 20_000;
+// ~45s cadence keeps upstream calls to ~80/hour — well under Instagram's
+// unauthenticated rate limit — while client interpolation hides the gap.
+const FRESH_MS = 45_000;
 const LOCK_KEY = "vozinha:refresh-lock";
-const LOCK_TTL_SEC = 25;
+const LOCK_TTL_SEC = 40;
 
 /**
  * If the cached snapshot is missing or older than maxAgeMs, try to acquire a
@@ -75,10 +77,16 @@ const LOCK_TTL_SEC = 25;
  * traffic keeps the count fresh without an external cron — while the lock bounds
  * upstream calls to ~one per LOCK_TTL_SEC no matter how many concurrent
  * requests or serverless instances are live.
+ *
+ * Pass the snapshot the caller already read as `known` to avoid a redundant
+ * KV round-trip on the common fresh path.
  */
-export async function refreshIfStale(maxAgeMs = FRESH_MS): Promise<void> {
+export async function refreshIfStale(
+  known?: Snapshot | null,
+  maxAgeMs = FRESH_MS
+): Promise<void> {
   const store = getStore();
-  const snap = await store.get();
+  const snap = known !== undefined ? known : await store.get();
   if (snap && snap.ok && Date.now() - snap.ts < maxAgeMs) return;
   if (!(await store.tryLock(LOCK_KEY, LOCK_TTL_SEC))) return;
   try {
