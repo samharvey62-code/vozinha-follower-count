@@ -3,6 +3,7 @@ import { refreshSnapshot } from "@/lib/refresh";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // Apify run-sync can take tens of seconds
 
 /**
  * Authorized if no secret is configured (dev), or the request carries

@@ -3,6 +3,7 @@ import { ensureSnapshot, refreshIfStale } from "@/lib/refresh";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // the after() refresh may make an Apify call
 
 // CDN-cached so a viral traffic spike hits the edge, not the store/Instagram.
 const CACHE = "public, s-maxage=10, stale-while-revalidate=60";

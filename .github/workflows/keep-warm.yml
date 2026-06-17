@@ -1,25 +1,23 @@
 name: keep-warm
 
-# Keeps the live counter fresh even with no visitor traffic. GitHub's minimum
-# schedule is every 5 minutes, so each run pings /api/poll several times a minute
-# apart to give near-continuous coverage. Free on public repos.
+# Sparse backup refresh for fully-idle periods. NOTE: GitHub's scheduler is
+# best-effort and often runs far less often than requested, so this is only a
+# backstop — the primary refresh is visitor traffic (which, via Apify, is now
+# reliable). For guaranteed 1-minute freshness with zero viewers, use an external
+# pinger like cron-job.org hitting /api/poll with the Bearer token.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Refresh the live count (~every 55s for ~5 min)
+      - name: Refresh the live count
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          for i in $(seq 1 6); do
-            code=$(curl -s -m 20 -o /dev/null -w "%{http_code}" \
-              -H "Authorization: Bearer $CRON_SECRET" \
-              "https://vozinha-follower-count.vercel.app/api/poll" || echo "000")
-            echo "ping $i -> $code"
-            if [ "$i" -lt 6 ]; then sleep 55; fi
-          done
+          curl -s -m 55 -o /dev/null -w "poll -> %{http_code}\n" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "https://vozinha-follower-count.vercel.app/api/poll" || true

@@ -12,8 +12,9 @@ export interface Sample {
 }
 
 /** Stop inventing followers once a sample is older than this (no fresh data).
- *  Comfortably exceeds the ~45s refresh cadence so a brief hiccup keeps ticking. */
-export const STALE_AFTER_MS = 120_000;
+ *  Exceeds the ~12-min refresh cadence so the counter keeps ticking between real
+ *  updates, and only flags "stale" if refreshes actually stop. */
+export const STALE_AFTER_MS = 15 * 60_000;
 /** Absurd-rate guard (followers/sec). */
 export const MAX_RATE = 10_000;
 

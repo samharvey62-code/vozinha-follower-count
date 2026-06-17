@@ -1,14 +1,19 @@
 import type { FollowerData, FollowerProvider } from "./types";
 
+const TIMEOUT_MS = 50_000; // Apify run-sync is usually ~5s; cap below the function's maxDuration
+
 /**
- * Apify Instagram Profile Scraper. Most robust escape hatch (handles proxies for
- * you). Requires APIFY_TOKEN. ~$11/mo at low volume.
+ * Apify Instagram Profile Scraper. Routes the scrape through Apify's managed,
+ * non-blocked IPs (immune to the datacenter-IP blocking that affects the direct
+ * provider). Requires APIFY_TOKEN.
  */
 export const apifyProvider: FollowerProvider = {
   name: "apify",
   async getFollowerCount(username: string): Promise<FollowerData | null> {
     const token = process.env.APIFY_TOKEN;
     if (!token) return null;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try {
       const res = await fetch(
         `https://api.apify.com/v2/acts/apify~instagram-profile-scraper/run-sync-get-dataset-items?token=${encodeURIComponent(
@@ -18,6 +23,7 @@ export const apifyProvider: FollowerProvider = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ usernames: [username] }),
+          signal: controller.signal,
         }
       );
       if (!res.ok) return null;
@@ -36,6 +42,8 @@ export const apifyProvider: FollowerProvider = {
       };
     } catch {
       return null;
+    } finally {
+      clearTimeout(timer);
     }
   },
 };

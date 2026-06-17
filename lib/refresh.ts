@@ -65,13 +65,14 @@ export async function ensureSnapshot(): Promise<Snapshot | null> {
   return inflight;
 }
 
-// ~45s steady cadence (freshness-gated) keeps upstream calls low — client
-// interpolation hides the gap. The lock only needs to cover one refresh attempt
-// to prevent a stampede; keeping it short means a FAILED refresh retries soon
-// (~15s) instead of being locked out, so an intermittent blip can't freeze it.
-const FRESH_MS = 45_000;
+// Real-data refresh cadence (default ~12 min, env-overridable via
+// REFRESH_INTERVAL_MS). The counter interpolates continuously between refreshes,
+// so a slower cadence still looks live while keeping Apify usage within its free
+// tier. The lock spans one refresh (an Apify call can take tens of seconds) to
+// prevent a stampede.
+const FRESH_MS = Number(process.env.REFRESH_INTERVAL_MS) || 12 * 60_000;
 const LOCK_KEY = "vozinha:refresh-lock";
-const LOCK_TTL_SEC = 15;
+const LOCK_TTL_SEC = 60;
 
 /**
  * If the cached snapshot is missing or older than maxAgeMs, try to acquire a
